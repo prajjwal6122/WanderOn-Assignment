@@ -6,7 +6,10 @@ import rateLimit from "express-rate-limit";
 import cors from "cors";
 import dotenv from "dotenv";
 import xss from "xss";
+import morgan from 'morgan';
 import { errorHandler } from './middlewares/errorHandler.js';
+import authRoutes from './routes/authRoute.js';
+import hpp from 'hpp';
 
 dotenv.config();
 

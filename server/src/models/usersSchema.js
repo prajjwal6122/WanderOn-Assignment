@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
-import { SECURITY, VALIDATION } from "../config/constants";
+import { SECURITY, VALIDATION } from "../config/constants.js";
 
 /**
  * User Schema

@@ -1,5 +1,5 @@
 import { body, validationResult } from "express-validator";
-import { VALIDATION } from "../config/constants";
+import { VALIDATION } from "../config/constants.js";
 
 /**
  * Validation rules for user registration

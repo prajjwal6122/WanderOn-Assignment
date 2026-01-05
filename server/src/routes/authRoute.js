@@ -13,7 +13,7 @@ import {
 } from '../controllers/authController.js';
 
 // Import middleware
-import { protect } from '../middleware/auth.js';
+import { protect } from '../middlewares/authMiddleware.js';
 
 // Import validation
 import {
@@ -22,7 +22,7 @@ import {
   updatePasswordValidation,
   updateProfileValidation,
   deleteAccountValidation
-} from '../middleware/validation.js';
+} from '../middlewares/validations.js';
 
 // ==============================================
 // PUBLIC ROUTES

@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import User from '../models/User.js';
+import User from '../models/usersSchema.js';
 
 /**
  * Protect routes - Verify JWT token from cookie

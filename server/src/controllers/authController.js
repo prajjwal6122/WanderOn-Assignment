@@ -1,4 +1,4 @@
-import User from '../models/User.js';
+import User from '../models/usersSchema.js';
 import jwt from 'jsonwebtoken';
 import { validationResult } from 'express-validator';
 
