@@ -8,13 +8,13 @@ import { SECURITY, VALIDATION } from "../config/constants.js";
  */
 const userSchema = new mongoose.Schema(
   {
-    firstName: {
+    first_name: {
       type: String,
       required: [true, "First name is required"],
       trim: true,
       maxlength: [50, "First name must be less than 50 characters"],
     },
-    lastName: {
+    last_name: {
       type: String,
       required: [true, "Last name is required"],
       trim: true,
@@ -50,6 +50,15 @@ const userSchema = new mongoose.Schema(
       ],
     },
     password: {
+      type: String,
+      required: [true, "Password is required"],
+      minlength: [
+        VALIDATION.PASSWORD.MIN_LENGTH,
+        `Password must be at least ${VALIDATION.PASSWORD.MIN_LENGTH} characters long`,
+      ],
+      select: false, // Don't return password by default in queries
+    },
+    confirm_password: {
       type: String,
       required: [true, "Password is required"],
       minlength: [
@@ -229,7 +238,7 @@ userSchema.statics.findByEmailorUsername = async function(identifier, password) 
     ],
     isActive: true
   }).select('+password');
-
+  console.log('func is running',user)
   if (!user) {
     throw new Error('Invalid credentials');
   }

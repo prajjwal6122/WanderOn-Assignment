@@ -80,57 +80,67 @@ export const register = async (req, res, next) => {
     if (!errors.isEmpty()) {
       return res.status(400).json({
         success: false,
-        message: 'Validation failed',
-        errors: errors.array().map(err => ({
+        message: "Validation failed",
+        errors: errors.array().map((err) => ({
           field: err.path,
-          message: err.msg
-        }))
+          message: err.msg,
+        })),
       });
     }
 
-    const { username, email, password } = req.body;
+    const {
+      username,
+      email,
+      password,
+      first_name,
+      last_name,
+      confirm_password,
+    } = req.body;
 
-    // Check if user already exists
-    const existingEmail = await User.findByEmail(email);
-    if (existingEmail) {
+    // Check if email already exists
+    const emailExists = await User.emailExists(email);
+    if (emailExists) {
       return res.status(400).json({
         success: false,
-        message: 'Email already registered',
-        field: 'email'
+        message: "Email already registered",
+        field: "email",
       });
     }
 
-    const existingUsername = await User.findByUsername(username);
-    if (existingUsername) {
+    // Check if username already exists
+    const usernameExists = await User.usernameExists(username);
+    if (usernameExists) {
       return res.status(400).json({
         success: false,
-        message: 'Username already taken',
-        field: 'username'
+        message: "Username already taken",
+        field: "username",
       });
     }
 
     // Create new user
     const user = await User.create({
+      first_name,
+      last_name,
       username,
       email,
-      password
+      password,
+      confirm_password,
     });
 
     console.log(`✅ New user registered: ${user.email}`);
 
     // Send token response
     sendTokenResponse(user, 201, res);
-
   } catch (error) {
-    console.error('❌ Registration error:', error);
-    
+    console.error("❌ Registration error:", error);
+
     // Handle mongoose validation errors
-    if (error.name === 'ValidationError') {
-      const messages = Object.values(error.errors).map(err => err.message);
+    if (error.name === "ValidationError") {
+      const messages = Object.values(error.errors).map((err) => err.message);
       return res.status(400).json({
         success: false,
-        message: 'Validation failed',
-        errors: messages
+        message: "Validation failed",
+        errors: messages,
       });
     }
 
@@ -140,13 +150,13 @@ export const register = async (req, res, next) => {
       return res.status(400).json({
         success: false,
         message: `${field} already exists`,
-        field: field
+        field: field,
       });
     }
 
     res.status(500).json({
       success: false,
-      message: 'Server error during registration. Please try again.'
+      message: "Server error during registration. Please try again.",
     });
   }
 };
@@ -163,31 +173,33 @@ export const login = async (req, res, next) => {
     if (!errors.isEmpty()) {
       return res.status(400).json({
         success: false,
-        message: 'Validation failed',
-        errors: errors.array().map(err => ({
+        message: "Validation failed",
+        errors: errors.array().map((err) => ({
           field: err.path,
-          message: err.msg
-        }))
+          message: err.msg,
+        })),
       });
     }
 
-    const { email, password } = req.body;
+    const { identifier, password } = req.body;
 
-    // Check if email and password are provided
-    if (!email || !password) {
+    // Check if identifier and password are provided
+    if (!identifier || !password) {
       return res.status(400).json({
         success: false,
-        message: 'Please provide email and password'
+        message: "Please provide email/username and password",
       });
     }
 
-    // Find user by email and include password field
-    const user = await User.findOne({ email: email.toLowerCase() }).select('+password');
+    // Find user by email or username and include password field
+    const user = await User.findOne({
+      $or: [{ email: identifier.toLowerCase() }, { username: identifier }],
+    }).select("+password");
 
     if (!user) {
       return res.status(401).json({
         success: false,
-        message: 'Invalid credentials'
+        message: "Invalid credentials",
       });
     }
 
@@ -195,7 +207,7 @@ export const login = async (req, res, next) => {
     if (!user.isActive) {
       return res.status(401).json({
         success: false,
-        message: 'Account has been deactivated. Please contact support.'
+        message: "Account has been deactivated. Please contact support.",
       });
     }
 
@@ -205,7 +217,7 @@ export const login = async (req, res, next) => {
     if (!isPasswordValid) {
       return res.status(401).json({
         success: false,
-        message: 'Invalid credentials'
+        message: "Invalid credentials",
       });
     }
 
@@ -216,12 +228,11 @@ export const login = async (req, res, next) => {
 
     // Send token response
     sendTokenResponse(user, 200, res);
-
   } catch (error) {
-    console.error('❌ Login error:', error);
+    console.error("❌ Login error:", error);
     res.status(500).json({
       success: false,
-      message: 'Server error during login. Please try again.'
+      message: "Server error during login. Please try again.",
     });
   }
 };
@@ -276,9 +287,8 @@ export const getMe = async (req, res, next) => {
  */
 export const logout = async (req, res, next) => {
   try {
-    // Clear the token cookie
-    res.cookie('token', 'none', {
-      expires: new Date(Date.now() + 10 * 1000), // Expire in 10 seconds
+    // Clear the token cookie immediately by setting it to expire in the past
+    res.clearCookie('token', {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',

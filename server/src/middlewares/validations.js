@@ -45,14 +45,14 @@ export const registerValidation = [
       return true;
     }),
 
-  body("firstName")
+  body("first_name")
     .trim()
     .isLength({ min: 2, max: 50 })
     .withMessage("First name must be between 2 and 50 characters")
     .matches(/^[a-zA-Z\s]+$/)
     .withMessage("First name can only contain letters and spaces"),
 
-  body("lastName")
+  body("last_name")
     .trim()
     .isLength({ min: 2, max: 50 })
     .withMessage("Last name must be between 2 and 50 characters")
@@ -77,13 +77,13 @@ export const registerValidation = [
     .isLength({ min: 6 })
     .withMessage("Password must be at least 6 characters long")
     .matches(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&.,\/+\-])[A-Za-z\d@$!%*?&.,\/+\-]+$/
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?])[A-Za-z\d!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+$/
     )
     .withMessage(
       "Password must contain at least one uppercase letter, one lowercase letter, and one number"
     ),
 
-  body("confirmPassword").custom((value, { req }) => {
+  body("confirm_password").custom((value, { req }) => {
     if (value !== req.body.password) {
       throw new Error("Password confirmation does not match password");
     }
@@ -138,12 +138,12 @@ export const updatePasswordValidation = [
     .isLength({ min: 8, max: 128 })
     .withMessage("New password must be at least 6 characters long")
     .matches(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&.,\/+\-])[A-Za-z\d@$!%*?&.,\/+\-]+$/
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?])[A-Za-z\d!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+$/
     )
     .withMessage(
       "New password must contain at least one uppercase letter, one lowercase letter, and one number"
     ),
-  body("confirmPassword").custom((value, { req }) => {
+  body("confirm_password").custom((value, { req }) => {
     if (value === req.body.newPassword) {
       throw new Error("New password must be different from current password");
     }

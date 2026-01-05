@@ -59,7 +59,7 @@ app.use(cors({
     const allowedOrigins = [
       process.env.CLIENT_URL,
       'http://localhost:3000',
-      'http://localhost:5500',
+      'http://localhost:5173/',
       'http://127.0.0.1:5500',
       'http://127.0.0.1:3000'
     ];
@@ -121,7 +121,7 @@ const apiLimiter = rateLimit({
 
 // Strict rate limiter for authentication routes
 const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
+  windowMs: 5 * 60 * 1000, // 15 minutes
   max: 5, // Limit each IP to 5 requests per windowMs
   skipSuccessfulRequests: true, // Don't count successful requests
   message: {
