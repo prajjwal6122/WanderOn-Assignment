@@ -1,4 +1,9 @@
 # WanderOn Authentication System 🌍
+## 🚀 Deployment
+
+### Live Demo
+- **Frontend**: [https://wanderon-qfy6.onrender.com/login](https://wanderon-qfy6.onrender.com/login)
+- **Backend API**: [https://wanderon-assignment-1-ik4q.onrender.com](https://wanderon-assignment-1-ik4q.onrender.com)
 
 A modern, secure user authentication system built for the WanderOn travel platform. This project demonstrates industry-standard practices in user authentication, security, and clean code architecture.
 
@@ -256,11 +261,6 @@ For detailed API documentation, see [API_DOCUMENTATION.md](API_DOCUMENTATION.md)
 - ✅ Validation system documentation
 - ✅ Testing guide
 
-## 🚀 Deployment
-
-### Live Demo
-- **Frontend**: [https://wanderon-qfy6.onrender.com/login](https://wanderon-qfy6.onrender.com/login)
-- **Backend API**: [https://wanderon-assignment-1-ik4q.onrender.com](https://wanderon-assignment-1-ik4q.onrender.com)
 
 ### Render Deployment
 See [DEPLOY_RENDER.md](DEPLOY_RENDER.md) for complete deployment instructions to Render
