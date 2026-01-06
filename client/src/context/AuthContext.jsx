@@ -108,6 +108,9 @@ export const AuthProvider = ({ children }) => {
       setError(null);
       const response = await axios.put("/api/auth/updateprofile", data, {
         withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+        },
       });
 
       if (response.data.success) {
@@ -129,6 +132,37 @@ export const AuthProvider = ({ children }) => {
         };
       }
       const message = err.response?.data?.message || "Update failed";
+      setError(message);
+      return { success: false, message };
+    }
+  };
+
+  const updatePassword = async (data) => {
+    try {
+      setError(null);
+      const response = await axios.put("/api/auth/updatepassword", data, {
+        withCredentials: true,
+      });
+
+      if (response.data.success) {
+        return { success: true, message: "Password updated successfully" };
+      }
+    } catch (err) {
+      // Handle validation errors with detailed field information
+      if (err.response?.data?.errors) {
+        const validationErrors = err.response.data.errors;
+        const errorMessages = validationErrors
+          .map((e) => `${e.field}: ${e.message}`)
+          .join(" | ");
+        setError(errorMessages);
+        return {
+          success: false,
+          message: errorMessages,
+          errors: validationErrors,
+        };
+      }
+      const message =
+        err.response?.data?.message || "Failed to update password";
       setError(message);
       return { success: false, message };
     }
@@ -160,6 +194,7 @@ export const AuthProvider = ({ children }) => {
     register,
     logout,
     updateProfile,
+    updatePassword,
     deleteAccount,
     checkAuth,
   };

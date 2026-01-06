@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import EditProfileModal from "../components/EditProfileModal";
 import ChangePasswordModal from "../components/ChangePasswordModal";
+import ChangeUsernameModal from "../components/ChangeUsernameModal";
 import DeleteAccountModal from "../components/DeleteAccountModal";
 import {
   Home,
@@ -27,6 +28,7 @@ export default function Dashboard() {
   const [activeTab, setActiveTab] = useState("overview");
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
   const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
+  const [isChangeUsernameOpen, setIsChangeUsernameOpen] = useState(false);
   const [isDeleteAccountOpen, setIsDeleteAccountOpen] = useState(false);
 
   const handleLogout = async () => {
@@ -652,6 +654,17 @@ export default function Dashboard() {
                         Update your password regularly
                       </div>
                     </button>
+                    <button
+                      onClick={() => setIsChangeUsernameOpen(true)}
+                      className="w-full text-left p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors"
+                    >
+                      <div className="font-medium text-gray-900 mb-1">
+                        Change Username
+                      </div>
+                      <div className="text-sm text-gray-500">
+                        Update your username
+                      </div>
+                    </button>
                     <button className="w-full text-left p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors">
                       <div className="font-medium text-gray-900 mb-1">
                         Two-Factor Authentication
@@ -753,6 +766,11 @@ export default function Dashboard() {
       <ChangePasswordModal
         isOpen={isChangePasswordOpen}
         onClose={() => setIsChangePasswordOpen(false)}
+      />
+      <ChangeUsernameModal
+        isOpen={isChangeUsernameOpen}
+        onClose={() => setIsChangeUsernameOpen(false)}
+        currentUsername={user?.username}
       />
       <DeleteAccountModal
         isOpen={isDeleteAccountOpen}

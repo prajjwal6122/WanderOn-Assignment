@@ -58,15 +58,6 @@ const userSchema = new mongoose.Schema(
       ],
       select: false, // Don't return password by default in queries
     },
-    confirm_password: {
-      type: String,
-      required: [true, "Password is required"],
-      minlength: [
-        VALIDATION.PASSWORD.MIN_LENGTH,
-        `Password must be at least ${VALIDATION.PASSWORD.MIN_LENGTH} characters long`,
-      ],
-      select: false, // Don't return password by default in queries
-    },
     role: {
       type: String,
       enum: ["user", "admin"],

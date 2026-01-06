@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { X, Eye, EyeOff, AlertCircle } from "lucide-react";
-import axios from "axios";
+import { useAuth } from "../context/AuthContext";
 
 export default function ChangePasswordModal({ isOpen, onClose }) {
+  const { updatePassword } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -65,13 +66,13 @@ export default function ChangePasswordModal({ isOpen, onClose }) {
     setLoading(true);
 
     try {
-      const response = await axios.put("/api/auth/updatepassword", {
+      const response = await updatePassword({
         currentPassword: formData.currentPassword,
         newPassword: formData.newPassword,
         confirmPassword: formData.confirmPassword,
       });
 
-      if (response.data.success) {
+      if (response.success) {
         setSuccess("Password changed successfully!");
         setFormData({
           currentPassword: "",
@@ -82,11 +83,11 @@ export default function ChangePasswordModal({ isOpen, onClose }) {
           onClose();
           setSuccess("");
         }, 2000);
+      } else {
+        setError(response.message);
       }
     } catch (err) {
-      const message =
-        err.response?.data?.message || "Failed to change password";
-      setError(message);
+      setError("Failed to change password");
     } finally {
       setLoading(false);
     }

@@ -387,42 +387,57 @@ export const updatePassword = async (req, res, next) => {
  */
 export const updateProfile = async (req, res, next) => {
   try {
-    const { username, email } = req.body;
+    const { username, email, firstName, lastName, first_name, last_name } =
+      req.body;
 
     const fieldsToUpdate = {};
-    
+
     if (username) {
       // Check if username is already taken
-      const existingUser = await User.findOne({ 
-        username, 
-        _id: { $ne: req.user.id } 
+      const existingUser = await User.findOne({
+        username,
+        _id: { $ne: req.user.id },
       });
-      
+
       if (existingUser) {
         return res.status(400).json({
           success: false,
-          message: 'Username already taken'
+          message: "Username already taken",
         });
       }
-      
+
       fieldsToUpdate.username = username;
     }
 
     if (email) {
       // Check if email is already taken
-      const existingUser = await User.findOne({ 
-        email: email.toLowerCase(), 
-        _id: { $ne: req.user.id } 
+      const existingUser = await User.findOne({
+        email: email.toLowerCase(),
+        _id: { $ne: req.user.id },
       });
-      
+
       if (existingUser) {
         return res.status(400).json({
           success: false,
-          message: 'Email already registered'
+          message: "Email already registered",
         });
       }
-      
+
       fieldsToUpdate.email = email.toLowerCase();
+    }
+
+    // Handle first name (support both firstName and first_name)
+    if (firstName) {
+      fieldsToUpdate.first_name = firstName;
+    } else if (first_name) {
+      fieldsToUpdate.first_name = first_name;
+    }
+
+    // Handle last name (support both lastName and last_name)
+    if (lastName) {
+      fieldsToUpdate.last_name = lastName;
+    } else if (last_name) {
+      fieldsToUpdate.last_name = last_name;
     }
 
     const user = await User.findByIdAndUpdate(

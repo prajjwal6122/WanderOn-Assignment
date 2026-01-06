@@ -2,35 +2,64 @@ import { useState } from "react";
 import { X, AlertCircle } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 
-export default function EditProfileModal({ isOpen, onClose, user }) {
+export default function ChangeUsernameModal({
+  isOpen,
+  onClose,
+  currentUsername,
+}) {
   const { updateProfile } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const [formData, setFormData] = useState({
-    first_name: user?.first_name || "",
-    last_name: user?.last_name || "",
-    username: user?.username || "",
-  });
+  const [newUsername, setNewUsername] = useState("");
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    setNewUsername(e.target.value);
     setError("");
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
     setError("");
     setSuccess("");
 
+    // Validation
+    if (!newUsername.trim()) {
+      setError("Username cannot be empty");
+      return;
+    }
+
+    if (newUsername === currentUsername) {
+      setError("New username must be different from current username");
+      return;
+    }
+
+    if (newUsername.length < 3) {
+      setError("Username must be at least 3 characters");
+      return;
+    }
+
+    if (newUsername.length > 30) {
+      setError("Username must not exceed 30 characters");
+      return;
+    }
+
+    // Validate alphanumeric and underscores only
+    if (!/^[a-zA-Z0-9_]+$/.test(newUsername)) {
+      setError("Username can only contain letters, numbers, and underscores");
+      return;
+    }
+
+    setLoading(true);
+
     try {
-      const response = await updateProfile(formData);
+      const response = await updateProfile({
+        username: newUsername,
+      });
+
       if (response.success) {
-        setSuccess("Profile updated successfully!");
+        setSuccess("Username changed successfully!");
+        setNewUsername("");
         setTimeout(() => {
           onClose();
           setSuccess("");
@@ -39,7 +68,7 @@ export default function EditProfileModal({ isOpen, onClose, user }) {
         setError(response.message);
       }
     } catch (err) {
-      setError("Failed to update profile");
+      setError("Failed to change username");
     } finally {
       setLoading(false);
     }
@@ -52,7 +81,7 @@ export default function EditProfileModal({ isOpen, onClose, user }) {
       <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full">
         {/* Header */}
         <div className="flex justify-between items-center p-6 border-b border-gray-200">
-          <h2 className="text-2xl font-bold text-gray-900">Edit Profile</h2>
+          <h2 className="text-2xl font-bold text-gray-900">Change Username</h2>
           <button
             onClick={onClose}
             className="text-gray-400 hover:text-gray-600 transition"
@@ -81,48 +110,27 @@ export default function EditProfileModal({ isOpen, onClose, user }) {
             </div>
           )}
 
-          {/* First Name */}
+          {/* Current Username */}
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">
-              First Name
+              Current Username
             </label>
-            <input
-              type="text"
-              name="first_name"
-              value={formData.first_name}
-              onChange={handleChange}
-              placeholder="Enter your first name"
-              className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition outline-none"
-            />
+            <div className="px-4 py-3 bg-gray-100 border-2 border-gray-200 rounded-lg text-gray-900 font-semibold">
+              {currentUsername}
+            </div>
           </div>
 
-          {/* Last Name */}
+          {/* New Username */}
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">
-              Last Name
+              New Username
             </label>
             <input
               type="text"
-              name="last_name"
-              value={formData.last_name}
-              onChange={handleChange}
-              placeholder="Enter your last name"
-              className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition outline-none"
-            />
-          </div>
-
-          {/* Username */}
-          <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
-              Username
-            </label>
-            <input
-              type="text"
-              name="username"
-              value={formData.username}
+              value={newUsername}
               onChange={handleChange}
               required
-              placeholder="Enter your username"
+              placeholder="Enter your new username"
               className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition outline-none"
             />
             <p className="text-xs text-gray-500 mt-1">
@@ -144,7 +152,7 @@ export default function EditProfileModal({ isOpen, onClose, user }) {
               disabled={loading}
               className="flex-1 px-4 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition"
             >
-              {loading ? "Saving..." : "Save Changes"}
+              {loading ? "Changing..." : "Change Username"}
             </button>
           </div>
         </form>
