@@ -43,6 +43,19 @@ export const AuthProvider = ({ children }) => {
         return { success: true };
       }
     } catch (err) {
+      // Handle validation errors with detailed field information
+      if (err.response?.data?.errors) {
+        const validationErrors = err.response.data.errors;
+        const errorMessages = validationErrors
+          .map((e) => `${e.field}: ${e.message}`)
+          .join(" | ");
+        setError(errorMessages);
+        return {
+          success: false,
+          message: errorMessages,
+          errors: validationErrors,
+        };
+      }
       const message = err.response?.data?.message || "Login failed";
       setError(message);
       return { success: false, message };
@@ -52,7 +65,6 @@ export const AuthProvider = ({ children }) => {
   const register = async (userData) => {
     try {
       setError(null);
-      console.log(userData, "yo");
       const response = await axios.post("/api/auth/register", userData);
 
       if (response.data.success) {
@@ -60,6 +72,19 @@ export const AuthProvider = ({ children }) => {
         return { success: true };
       }
     } catch (err) {
+      // Handle validation errors with detailed field information
+      if (err.response?.data?.errors) {
+        const validationErrors = err.response.data.errors;
+        const errorMessages = validationErrors
+          .map((e) => `${e.field}: ${e.message}`)
+          .join(" | ");
+        setError(errorMessages);
+        return {
+          success: false,
+          message: errorMessages,
+          errors: validationErrors,
+        };
+      }
       const message = err.response?.data?.message || "Registration failed";
       setError(message);
       return { success: false, message };
@@ -88,6 +113,19 @@ export const AuthProvider = ({ children }) => {
         return { success: true };
       }
     } catch (err) {
+      // Handle validation errors with detailed field information
+      if (err.response?.data?.errors) {
+        const validationErrors = err.response.data.errors;
+        const errorMessages = validationErrors
+          .map((e) => `${e.field}: ${e.message}`)
+          .join(" | ");
+        setError(errorMessages);
+        return {
+          success: false,
+          message: errorMessages,
+          errors: validationErrors,
+        };
+      }
       const message = err.response?.data?.message || "Update failed";
       setError(message);
       return { success: false, message };

@@ -21,6 +21,7 @@ export default function Login() {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
+  const [validationErrors, setValidationErrors] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
@@ -29,12 +30,14 @@ export default function Login() {
       [e.target.name]: e.target.value,
     });
     setError("");
+    setValidationErrors([]);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError("");
+    setValidationErrors([]);
 
     const result = await login(formData.identifier, formData.password);
 
@@ -42,6 +45,10 @@ export default function Login() {
       navigate("/dashboard");
     } else {
       setError(result.message);
+      // Extract validation errors if available
+      if (result.errors) {
+        setValidationErrors(result.errors);
+      }
     }
 
     setLoading(false);
@@ -130,9 +137,39 @@ export default function Login() {
 
               {/* Error Alert */}
               {error && (
-                <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 rounded-lg flex items-start gap-3 animate-slide-up">
-                  <AlertCircle className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" />
-                  <p className="text-sm text-red-800 font-medium">{error}</p>
+                <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl animate-slide-up">
+                  <div className="flex items-start gap-3">
+                    <AlertCircle className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" />
+                    <div>
+                      <p className="text-sm text-red-800 font-semibold mb-3">
+                        {error}
+                      </p>
+
+                      {/* Validation Error Details */}
+                      {validationErrors.length > 0 && (
+                        <div className="mt-3 pt-3 border-t border-red-200">
+                          <p className="text-xs font-semibold text-red-700 mb-2 uppercase">
+                            Why did it fail?
+                          </p>
+                          <ul className="space-y-2">
+                            {validationErrors.map((err, idx) => (
+                              <li
+                                key={idx}
+                                className="text-xs text-red-700 flex items-start gap-2"
+                              >
+                                <span className="text-red-600 font-bold mt-0.5">
+                                  •
+                                </span>
+                                <span>
+                                  <strong>{err.field}:</strong> {err.message}
+                                </span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 </div>
               )}
 

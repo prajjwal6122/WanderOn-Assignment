@@ -25,6 +25,7 @@ export default function Register() {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
+  const [validationErrors, setValidationErrors] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
@@ -33,6 +34,7 @@ export default function Register() {
       [e.target.name]: e.target.value,
     });
     setError("");
+    setValidationErrors([]);
   };
 
   const validatePassword = (password) => {
@@ -40,13 +42,15 @@ export default function Register() {
     const hasUpper = /[A-Z]/.test(password);
     const hasLower = /[a-z]/.test(password);
     const hasNumber = /\d/.test(password);
+    const hasSpecial = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password);
 
     return {
       minLength,
       hasUpper,
       hasLower,
       hasNumber,
-      isValid: minLength && hasUpper && hasLower && hasNumber,
+      hasSpecial,
+      isValid: minLength && hasUpper && hasLower && hasNumber && hasSpecial,
     };
   };
 
@@ -70,13 +74,17 @@ export default function Register() {
     }
 
     const { confirm_password, ...registerData } = formData;
-    const UserData={confirm_password,...registerData}
+    const UserData = { confirm_password, ...registerData };
     const result = await register(UserData);
 
     if (result.success) {
       navigate("/dashboard");
     } else {
       setError(result.message);
+      // Extract validation errors if available
+      if (result.errors) {
+        setValidationErrors(result.errors);
+      }
     }
 
     setLoading(false);
@@ -102,9 +110,39 @@ export default function Register() {
         <div className="card">
           {/* Error Alert */}
           {error && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl flex items-start gap-3">
-              <AlertCircle className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" />
-              <p className="text-sm text-red-800 font-medium">{error}</p>
+            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl">
+              <div className="flex items-start gap-3">
+                <AlertCircle className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" />
+                <div>
+                  <p className="text-sm text-red-800 font-semibold mb-3">
+                    {error}
+                  </p>
+
+                  {/* Validation Error Details */}
+                  {validationErrors.length > 0 && (
+                    <div className="mt-3 pt-3 border-t border-red-200">
+                      <p className="text-xs font-semibold text-red-700 mb-2 uppercase">
+                        Why did it fail?
+                      </p>
+                      <ul className="space-y-2">
+                        {validationErrors.map((err, idx) => (
+                          <li
+                            key={idx}
+                            className="text-xs text-red-700 flex items-start gap-2"
+                          >
+                            <span className="text-red-600 font-bold mt-0.5">
+                              •
+                            </span>
+                            <span>
+                              <strong>{err.field}:</strong> {err.message}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
           )}
 
@@ -266,6 +304,20 @@ export default function Register() {
                       <div className="w-4 h-4 border-2 border-gray-300 rounded-full" />
                     )}
                     One number
+                  </div>
+                  <div
+                    className={`flex items-center gap-2 text-sm ${
+                      passwordValidation.hasSpecial
+                        ? "text-green-600"
+                        : "text-gray-500"
+                    }`}
+                  >
+                    {passwordValidation.hasSpecial ? (
+                      <CheckCircle2 className="w-4 h-4" />
+                    ) : (
+                      <div className="w-4 h-4 border-2 border-gray-300 rounded-full" />
+                    )}
+                    One special character (!@#$%^&*...)
                   </div>
                 </div>
               )}
