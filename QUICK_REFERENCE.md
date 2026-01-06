@@ -4,7 +4,16 @@
 
 ---
 
-## 📚 Documentation Files
+## � **LIVE DEPLOYMENT**
+
+| Component | URL |
+|-----------|-----|
+| **Frontend** | https://wanderon-qfy6.onrender.com/login |
+| **Backend API** | https://wanderon-assignment-1-ik4q.onrender.com |
+
+---
+
+## �📚 Documentation Files
 
 | File | Purpose | Read Time |
 |------|---------|-----------|

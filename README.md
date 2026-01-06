@@ -258,8 +258,12 @@ For detailed API documentation, see [API_DOCUMENTATION.md](API_DOCUMENTATION.md)
 
 ## 🚀 Deployment
 
+### Live Demo
+- **Frontend**: [https://wanderon-qfy6.onrender.com/login](https://wanderon-qfy6.onrender.com/login)
+- **Backend API**: [https://wanderon-assignment-1-ik4q.onrender.com](https://wanderon-assignment-1-ik4q.onrender.com)
+
 ### Render Deployment
-See [SETUP.md](SETUP.md) for complete deployment instructions to Render
+See [DEPLOY_RENDER.md](DEPLOY_RENDER.md) for complete deployment instructions to Render
 
 Quick steps:
 1. Push code to GitHub

@@ -4,7 +4,7 @@ import axios from "axios";
 const AuthContext = createContext(null);
 
 // Configure axios defaults
-axios.defaults.baseURL = "http://localhost:5000";
+axios.defaults.baseURL = "https://wanderon-assignment-1-ik4q.onrender.com";
 axios.defaults.withCredentials = true;
 
 export const AuthProvider = ({ children }) => {

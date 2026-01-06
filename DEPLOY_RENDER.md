@@ -54,7 +54,7 @@ JWT_EXPIRE=7d
 JWT_COOKIE_EXPIRE=7
 
 # Client (will update after deployment)
-CLIENT_URL=https://your-frontend-url.onrender.com
+CLIENT_URL=https://wanderon-qfy6.onrender.com
 
 # Security
 BCRYPT_ROUNDS=10
@@ -189,7 +189,7 @@ Replace:
 ### 3.3 Configure Backend Service
 
 **Service Settings**:
-- Name: `wanderon-api` (or any name)
+- Name: `wanderon-assignment-1-ik4q` (or any name)
 - Environment: `Node`
 - Build Command: `npm install`
 - Start Command: `npm start`
@@ -211,7 +211,7 @@ MONGODB_URI           mongodb+srv://username:password@cluster...
 JWT_SECRET            your_super_secret_key_12345
 JWT_EXPIRE            7d
 JWT_COOKIE_EXPIRE     7
-CLIENT_URL            https://yourdomain.onrender.com (frontend URL)
+CLIENT_URL            https://wanderon-qfy6.onrender.com
 PORT                  5000
 BCRYPT_ROUNDS         10
 ```
@@ -225,12 +225,12 @@ BCRYPT_ROUNDS         10
 
 1. Click "Create Web Service"
 2. Wait for deployment (2-5 minutes)
-3. You'll get URL: `https://wanderon-api.onrender.com`
+3. You'll get URL: `https://wanderon-assignment-1-ik4q.onrender.com`
 
 **Check Deployment**:
 ```bash
 # Test your API
-curl https://wanderon-api.onrender.com/api/auth/me
+curl https://wanderon-assignment-1-ik4q.onrender.com/api/auth/me
 
 # Should return 401 (not logged in) - that's correct!
 ```
@@ -259,7 +259,7 @@ Before deploying, update `client/src/context/AuthContext.jsx`:
 
 ```javascript
 // Change from localhost
-axios.defaults.baseURL = 'https://wanderon-api.onrender.com';
+axios.defaults.baseURL = 'https://wanderon-assignment-1-ik4q.onrender.com';
 // Note: Use your actual Render backend URL
 ```
 
@@ -267,7 +267,7 @@ Or better, use environment variable:
 
 In `client/.env`:
 ```
-VITE_API_BASE_URL=https://wanderon-api.onrender.com
+VITE_API_BASE_URL=https://wanderon-assignment-1-ik4q.onrender.com
 ```
 
 In `AuthContext.jsx`:
@@ -279,7 +279,7 @@ axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:
 
 1. Click "Create Static Site"
 2. Wait for build and deployment (2-5 minutes)
-3. You'll get URL: `https://wanderon-app.onrender.com`
+3. You'll get URL: `https://wanderon-qfy6.onrender.com`
 
 ---
 
@@ -292,14 +292,14 @@ axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:
 3. Go to "Environment"
 4. Update `CLIENT_URL`:
    ```
-   https://wanderon-app.onrender.com
+   https://wanderon-qfy6.onrender.com
    ```
 5. Click "Save Changes"
 6. Service will redeploy automatically
 
 ### 5.2 Verify Connection
 
-1. Open frontend: `https://wanderon-app.onrender.com`
+1. Open frontend: `https://wanderon-qfy6.onrender.com/login`
 2. Try to register
 3. Check browser console (F12) for any CORS errors
 4. Check Render logs for backend errors
@@ -488,7 +488,8 @@ After deployment, test on:
 After deployment:
 
 1. **Share URL**
-   - Frontend: `https://wanderon-app.onrender.com`
+   - Frontend: `https://wanderon-qfy6.onrender.com/login`
+   - Backend: `https://wanderon-assignment-1-ik4q.onrender.com`
    - Show to evaluators
 
 2. **Create Test Accounts**

@@ -15,12 +15,34 @@ dotenv.config();
 
 const app = express();
 
-app.use(
-  cors({
-    origin: process.env.CLIENT_URL || "http://localhost:3000",
-    credentials: true,
-  })
-);
+// =====================================================
+// CORS configuration - Allow credentials and specific origin
+// =====================================================
+app.use(cors({
+  origin: (origin, callback) => {
+    const allowedOrigins = [
+      process.env.CLIENT_URL,
+      'https://wanderon-qfy6.onrender.com',
+      'http://localhost:3000',
+      'http://localhost:5173',
+      'http://127.0.0.1:5500',
+      'http://127.0.0.1:3000'
+    ];
+    
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(null, true); // For development, allow all origins
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  exposedHeaders: ['set-cookie']
+}));
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -51,32 +73,6 @@ app.use(helmet({
   },
   crossOriginEmbedderPolicy: false,
   crossOriginResourcePolicy: { policy: "cross-origin" }
-}));
-
-// CORS configuration - Allow credentials and specific origin
-app.use(cors({
-  origin: (origin, callback) => {
-    const allowedOrigins = [
-      process.env.CLIENT_URL,
-      'http://localhost:3000',
-      'http://localhost:5173/',
-      'http://127.0.0.1:5500',
-      'http://127.0.0.1:3000'
-    ];
-    
-    // Allow requests with no origin (like mobile apps or curl requests)
-    if (!origin) return callback(null, true);
-    
-    if (allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(null, true); // For development, allow all origins
-    }
-  },
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
-  exposedHeaders: ['set-cookie']
 }));
 
 // Body parser middleware
