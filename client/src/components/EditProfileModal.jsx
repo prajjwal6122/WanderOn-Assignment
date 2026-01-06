@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { X, Upload, AlertCircle } from "lucide-react";
+import { X, AlertCircle } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 
 export default function EditProfileModal({ isOpen, onClose, user }) {
@@ -7,27 +7,9 @@ export default function EditProfileModal({ isOpen, onClose, user }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const [previewUrl, setPreviewUrl] = useState(null);
   const [formData, setFormData] = useState({
     username: user?.username || "",
-    profileImage: null,
   });
-
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      if (file.size > 5 * 1024 * 1024) {
-        setError("Image size must be less than 5MB");
-        return;
-      }
-      setFormData({ ...formData, profileImage: file });
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreviewUrl(reader.result);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
 
   const handleChange = (e) => {
     setFormData({
@@ -44,13 +26,7 @@ export default function EditProfileModal({ isOpen, onClose, user }) {
     setSuccess("");
 
     try {
-      const data = new FormData();
-      data.append("username", formData.username);
-      if (formData.profileImage) {
-        data.append("profileImage", formData.profileImage);
-      }
-
-      const response = await updateProfile(data);
+      const response = await updateProfile(formData);
       if (response.success) {
         setSuccess("Profile updated successfully!");
         setTimeout(() => {
@@ -102,40 +78,6 @@ export default function EditProfileModal({ isOpen, onClose, user }) {
               <p className="text-sm text-green-800">{success}</p>
             </div>
           )}
-
-          {/* Profile Image */}
-          <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-3">
-              Profile Picture
-            </label>
-            <div className="space-y-4">
-              <div className="relative">
-                {previewUrl || user?.profileImage ? (
-                  <img
-                    src={previewUrl || user?.profileImage}
-                    alt="Preview"
-                    className="w-full h-48 object-cover rounded-xl"
-                  />
-                ) : (
-                  <div className="w-full h-48 bg-gray-100 rounded-xl flex items-center justify-center">
-                    <div className="text-center">
-                      <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-                      <p className="text-gray-600 text-sm">No image selected</p>
-                    </div>
-                  </div>
-                )}
-              </div>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-                className="block w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700 transition"
-              />
-              <p className="text-xs text-gray-500">
-                Max file size: 5MB. Formats: JPG, PNG, GIF
-              </p>
-            </div>
-          </div>
 
           {/* Username */}
           <div>

@@ -106,7 +106,9 @@ export const AuthProvider = ({ children }) => {
   const updateProfile = async (data) => {
     try {
       setError(null);
-      const response = await axios.put("/api/auth/updateprofile", data);
+      const response = await axios.put("/api/auth/updateprofile", data, {
+        withCredentials: true,
+      });
 
       if (response.data.success) {
         setUser(response.data.user);
@@ -132,6 +134,24 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const deleteAccount = async () => {
+    try {
+      setError(null);
+      const response = await axios.delete("/api/auth/deleteaccount", {
+        withCredentials: true,
+      });
+
+      if (response.data.success) {
+        setUser(null);
+        return { success: true, message: "Account deleted successfully" };
+      }
+    } catch (err) {
+      const message = err.response?.data?.message || "Failed to delete account";
+      setError(message);
+      return { success: false, message };
+    }
+  };
+
   const value = {
     user,
     loading,
@@ -140,6 +160,7 @@ export const AuthProvider = ({ children }) => {
     register,
     logout,
     updateProfile,
+    deleteAccount,
     checkAuth,
   };
 

@@ -84,7 +84,12 @@ export default function Login() {
                 <Mountain className="w-8 h-8 text-cyan-500" />
               </div>
               <div>
-                <h1 className="text-3xl font-bold text-white">WanderAuth</h1>
+                <h1
+                  className="text-3xl font-bold text-white typing"
+                  style={{ width: "180px" }}
+                >
+                  WanderOn
+                </h1>
                 <p className="text-cyan-100 text-sm">
                   Your Journey Begins Here
                 </p>
