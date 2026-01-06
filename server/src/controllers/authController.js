@@ -319,17 +319,31 @@ export const logout = async (req, res, next) => {
  */
 export const updatePassword = async (req, res, next) => {
   try {
-    const { currentPassword, newPassword } = req.body;
-
-    if (!currentPassword || !newPassword) {
+    // Validate input
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
       return res.status(400).json({
         success: false,
-        message: 'Please provide current and new password'
+        message: "Validation failed",
+        errors: errors.array().map((err) => ({
+          field: err.path,
+          message: err.msg,
+        })),
+      });
+    }
+
+    const { currentPassword, newPassword, confirmPassword } = req.body;
+
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Please provide current password, new password, and confirmation",
       });
     }
 
     // Get user with password
-    const user = await User.findById(req.user.id).select('+password');
+    const user = await User.findById(req.user.id).select("+password");
 
     // Verify current password
     const isPasswordValid = await user.comparePassword(currentPassword);
@@ -337,7 +351,15 @@ export const updatePassword = async (req, res, next) => {
     if (!isPasswordValid) {
       return res.status(401).json({
         success: false,
-        message: 'Current password is incorrect'
+        message: "Current password is incorrect",
+      });
+    }
+
+    // Check if new password is different from current password
+    if (currentPassword === newPassword) {
+      return res.status(400).json({
+        success: false,
+        message: "New password must be different from current password",
       });
     }
 
@@ -349,7 +371,6 @@ export const updatePassword = async (req, res, next) => {
 
     // Send new token
     sendTokenResponse(user, 200, res);
-
   } catch (error) {
     console.error('❌ Update password error:', error);
     res.status(500).json({

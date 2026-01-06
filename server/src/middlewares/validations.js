@@ -136,19 +136,21 @@ export const updatePasswordValidation = [
     .notEmpty()
     .withMessage("New password is required")
     .isLength({ min: 8, max: 128 })
-    .withMessage("New password must be at least 6 characters long")
+    .withMessage("New password must be at least 8 characters long")
     .matches(
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?])[A-Za-z\d!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+$/
     )
     .withMessage(
-      "New password must contain at least one uppercase letter, one lowercase letter, and one number"
+      "New password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
     ),
-  body("confirm_password").custom((value, { req }) => {
-    if (value === req.body.newPassword) {
-      throw new Error("New password must be different from current password");
+
+  body("confirmPassword").custom((value, { req }) => {
+    if (value !== req.body.newPassword) {
+      throw new Error("Password confirmation does not match new password");
     }
     return true;
   }),
+
   handleValidationErrors,
 ];
 

@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import EditProfileModal from "../components/EditProfileModal";
+import ChangePasswordModal from "../components/ChangePasswordModal";
 import {
   Home,
   User,
@@ -24,6 +26,8 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
   const [activeTab, setActiveTab] = useState("overview");
+  const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
+  const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
 
   const handleLogout = async () => {
     await logout();
@@ -289,7 +293,10 @@ export default function Dashboard() {
                       <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                       Active
                     </div>
-                    <button className="btn-primary w-full flex items-center justify-center gap-2">
+                    <button
+                      onClick={() => setIsEditProfileOpen(true)}
+                      className="btn-primary w-full flex items-center justify-center gap-2"
+                    >
                       <Edit2 className="w-4 h-4" />
                       Edit Profile
                     </button>
@@ -389,7 +396,10 @@ export default function Dashboard() {
                     Security
                   </h3>
                   <div className="space-y-4">
-                    <button className="w-full text-left p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors">
+                    <button
+                      onClick={() => setIsChangePasswordOpen(true)}
+                      className="w-full text-left p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors"
+                    >
                       <div className="font-medium text-gray-900 mb-1">
                         Change Password
                       </div>
@@ -484,6 +494,17 @@ export default function Dashboard() {
           )}
         </main>
       </div>
+
+      {/* Modals */}
+      <EditProfileModal
+        isOpen={isEditProfileOpen}
+        onClose={() => setIsEditProfileOpen(false)}
+        user={user}
+      />
+      <ChangePasswordModal
+        isOpen={isChangePasswordOpen}
+        onClose={() => setIsChangePasswordOpen(false)}
+      />
     </div>
   );
 }
